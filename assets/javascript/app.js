@@ -1,10 +1,12 @@
 const questionContainer = document.getElementById('triviaQuestions');
 const possibleAnswersContainer = document.getElementById('possibleAnswers');
 const submitAnswerbtn = document.getElementById('submitAnswers');
-const previousButton = document.getElementById("previous");
-const nextButton = document.getElementById("next");
-const slides = document.querySelectorAll(".slide");
-let currentSlide = 0;
+const startGamebtn = document.getElementById('startGame');
+var intervalId;
+
+// prevents the clock from being sped up unnecessarily
+var timerRunning = false;
+var time = 0;
 
 
 const gameQuestions = [
@@ -38,11 +40,81 @@ const gameQuestions = [
     }
 ];
 
-// display questions right away
-buildQuestion();
+// start the games
+startGamebtn.addEventListener('click', function() {
+    initGame();
+    buildQuestion();
+    startTimer();
+}
+);
+
 
 // on submit, show possibleAnswers
-submitAnswerbtn.addEventListener('click', showpossibleAnswers);
+submitAnswerbtn.addEventListener('click', function() {
+    stopTimer();
+    showpossibleAnswers();
+});
+//
+function initGame() {
+    questionContainer.innerHTML = "";
+    $("#timeDisplay").text("00:00");
+    startTimer();
+
+}
+
+function startTimer() {
+
+    // DONE: Use setInterval to start the count here and set the clock to running.
+    if (!timerRunning) {
+      intervalId = setInterval(count, 1000);
+      timerRunning = true;
+    }
+  }
+  function stopTimer() {
+
+    // DONE: Use clearInterval to stop the count here and set the clock to not be running.
+    clearInterval(intervalId);
+    timerRunning = false;
+  }
+  function count() {
+
+    // DONE: increment time by 1, remember we cant use "this" here.
+    time++;
+  
+    // DONE: Get the current time, pass that into the timeConverter function,
+    //       and save the result in a variable.
+    var converted = timeConverter(time);
+    console.log(converted);
+  
+    // DONE: Use the variable we just created to show the converted time in the "display" div.
+    $("#display").text(converted);
+  }
+
+  var converted = timeConverter(time);
+  console.log(converted);
+
+  // DONE: Use the variable we just created to show the converted time in the "display" div.
+  $("#timeDisplay").text(converted);
+
+
+function timeConverter(t) {
+
+  var minutes = Math.floor(t / 60);
+  var seconds = t - (minutes * 60);
+
+  if (seconds < 10) {
+    seconds = "0" + seconds;
+  }
+
+  if (minutes === 0) {
+    minutes = "00";
+  }
+  else if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+
+  return minutes + ":" + seconds;
+}
 
 function buildQuestion() {
     // we'll need a place to store the HTML output
@@ -67,94 +139,55 @@ function buildQuestion() {
           </label>`
                 );
             }
-
-            // output.push(
-            //    `<div class="slide">
-            //  <div class="question"> ${currentQuestion.question} </div>
-            //<div class="answers"> ${answers.join("")} </div>
-            //</div>`
-            //);
-
-
-            // add this question and its answers to the output
+console.log(answers);
             output.push(
-                `<div class="slide">
-                 <div class="question"> ${currentQuestion.question} </div>
-            <div class="answers"> ${answers.join('')} </div>
-            </div>`
+               
+             `<div class="question"> ${currentQuestion.question} </div>
+           <div class="answers"> ${answers.join("")} </div>`
             );
-            console.log(output);
-            // finally combine our output list into one string of HTML and put it on the page
-            questionContainer.innerHTML = output.join('');
-    })
+
+            console.log('output ' + output);
+
+
+    
+        })
+        questionContainer.innerHTML = output.join("");
 };
 
 
 function showpossibleAnswers() {
 
-            // gather answer containers from our questions
-            const answerContainers = questionContainer.querySelectorAll('.answers');
+    // gather answer containers from our questions
+    const answerContainers = questionContainer.querySelectorAll('.answers');
 
-            // keep track of user's answers
-            let numCorrect = 0;
+    // keep track of user's answers
+    let numCorrect = 0;
 
-            // for each question...
-            gameQuestions.forEach((currentQuestion, questionNumber) => {
+    // for each question...
+    gameQuestions.forEach((currentQuestion, questionNumber) => {
 
-                // find selected answer
-                const answerContainer = answerContainers[questionNumber];
-                const selector = 'input[name=question' + questionNumber + ']:checked';
-                const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+        // find selected answer
+        const answerContainer = answerContainers[questionNumber];
+        const selector = 'input[name=question' + questionNumber + ']:checked';
+        const userAnswer = (answerContainer.querySelector(selector) || {}).value;
 
-                // if answer is correct
-                if (userAnswer === currentQuestion.correctAnswer) {
-                    // add to the number of correct answers
-                    numCorrect++;
+        // if answer is correct
+        if (userAnswer === currentQuestion.correctAnswer) {
+            // add to the number of correct answers
+            numCorrect++;
 
-                    // color the answers green
-                    answerContainers[questionNumber].style.color = 'lightgreen';
-                }
-                // if answer is wrong or blank
-                else {
-                    // color the answers red
-                    answerContainers[questionNumber].style.color = 'red';
-                }
-            });
-
-            // show number of correct answers out of total
-            possibleAnswersContainer.innerHTML = numCorrect + ' out of ' + gameQuestions.length;
-        };
-    function showSlide(n) {
-        console.log(slides)
-        //document.getElementsByClassName(slide).classList.add('active-slide')
-        slides[currentSlide].classList.remove('active-slide');
-        slides[n].classList.add('active-slide');
-        currentSlide = n;
-        if (currentSlide === 0) {
-            previousButton.style.display = 'none';
+            // color the answers green
+            answerContainers[questionNumber].style.color = 'lightgreen';
         }
+        // if answer is wrong or blank
         else {
-            previousButton.style.display = 'inline-block';
+            // color the answers red
+            answerContainers[questionNumber].style.color = 'red';
         }
-        if (currentSlide === slides.length - 1) {
-            nextButton.style.display = 'none';
-            submitButton.style.display = 'inline-block';
-        }
-        else {
-            nextButton.style.display = 'inline-block';
-            submitButton.style.display = 'none';
-        }
-    };
-    showSlide(0);
+    });
 
-    function showNextSlide() {
-        showSlide(currentSlide + 1);
-    }
+    // show number of correct answers out of total
+    possibleAnswersContainer.innerHTML = numCorrect + ' out of ' + gameQuestions.length;
+};
 
-    function showPreviousSlide() {
-        showSlide(currentSlide - 1);
-    }
-
-    previousButton.addEventListener("click", showPreviousSlide);
-    nextButton.addEventListener("click", showNextSlide);
 
