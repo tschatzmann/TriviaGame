@@ -2,11 +2,11 @@ const questionContainer = document.getElementById('triviaQuestions');
 const possibleAnswersContainer = document.getElementById('possibleAnswers');
 const submitAnswerbtn = document.getElementById('submitAnswers');
 const startGamebtn = document.getElementById('startGame');
+const gameTimer = document.getElementById('timeDisplay')
 var intervalId;
-
-// prevents the clock from being sped up unnecessarily
 var timerRunning = false;
 var time = 0;
+var questionNumber = 0;
 
 
 const gameQuestions = [
@@ -41,12 +41,7 @@ const gameQuestions = [
 ];
 
 // start the games
-startGamebtn.addEventListener('click', function() {
-    initGame();
-    buildQuestion();
-    startTimer();
-}
-);
+startGamebtn.addEventListener('click', initGame);
 
 
 // on submit, show possibleAnswers
@@ -54,13 +49,18 @@ submitAnswerbtn.addEventListener('click', function() {
     stopTimer();
     showpossibleAnswers();
 });
+
+setTimeout(initGame, 1000 * 15);
 //
 function initGame() {
     questionContainer.innerHTML = "";
-    $("#timeDisplay").text("00:00");
+    gameTimer.innerHTML = "0.00";
+    time = 0;
+    stopTimer();
     startTimer();
-
-}
+    questionNumber++;
+    buildQuestion();
+};
 
 function startTimer() {
 
@@ -69,13 +69,14 @@ function startTimer() {
       intervalId = setInterval(count, 1000);
       timerRunning = true;
     }
-  }
+  };
   function stopTimer() {
 
     // DONE: Use clearInterval to stop the count here and set the clock to not be running.
     clearInterval(intervalId);
     timerRunning = false;
-  }
+  };
+
   function count() {
 
     // DONE: increment time by 1, remember we cant use "this" here.
@@ -87,14 +88,14 @@ function startTimer() {
     console.log(converted);
   
     // DONE: Use the variable we just created to show the converted time in the "display" div.
-    $("#display").text(converted);
+    gameTimer.innerHTML = converted;
   }
 
   var converted = timeConverter(time);
   console.log(converted);
 
   // DONE: Use the variable we just created to show the converted time in the "display" div.
-  $("#timeDisplay").text(converted);
+  gameTimer.innerHTML = converted;
 
 
 function timeConverter(t) {
@@ -119,10 +120,11 @@ function timeConverter(t) {
 function buildQuestion() {
     // we'll need a place to store the HTML output
     const output = [];
+    var currentQuestion = gameQuestions[questionNumber];
+    console.log(currentQuestion);
 
     // for each question...
-    gameQuestions.forEach(
-        (currentQuestion, questionNumber) => {
+                        console.log('questionNumber ' + questionNumber);
 
             // we'll want to store the list of answer choices
             const answers = [];
@@ -150,8 +152,9 @@ console.log(answers);
 
 
     
-        })
+
         questionContainer.innerHTML = output.join("");
+
 };
 
 
