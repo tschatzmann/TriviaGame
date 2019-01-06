@@ -6,7 +6,7 @@ const gameTimer = document.getElementById('timeDisplay')
 var intervalId;
 var timerRunning = false;
 var time = 0;
-var questionNumber = 0;
+var questionNumber = -1;
 
 
 const gameQuestions = [
@@ -45,12 +45,12 @@ startGamebtn.addEventListener('click', initGame);
 
 
 // on submit, show possibleAnswers
-submitAnswerbtn.addEventListener('click', function() {
+submitAnswerbtn.addEventListener('click', function(){
     stopTimer();
     showpossibleAnswers();
 });
 
-setTimeout(initGame, 1000 * 15);
+
 //
 function initGame() {
     questionContainer.innerHTML = "";
@@ -60,6 +60,7 @@ function initGame() {
     startTimer();
     questionNumber++;
     buildQuestion();
+   setTimeout(initGame, 1000 * 15);
 };
 
 function startTimer() {
@@ -159,6 +160,7 @@ console.log(answers);
 
 
 function showpossibleAnswers() {
+   // stopTimer();
 
     // gather answer containers from our questions
     const answerContainers = questionContainer.querySelectorAll('.answers');
