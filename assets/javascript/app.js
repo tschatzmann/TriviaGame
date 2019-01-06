@@ -9,6 +9,7 @@ var time = 0;
 var questionNumber = -1;
 
 
+
 const gameQuestions = [
     {
         question: "test question 1?",
@@ -40,12 +41,16 @@ const gameQuestions = [
     }
 ];
 
+var numberOfQuestions = (Object.keys(gameQuestions));
+console.log(numberOfQuestions);
+numberOfQuestions = numberOfQuestions.length ++;
+console.log(numberOfQuestions);
 // start the games
 startGamebtn.addEventListener('click', initGame);
 
 
 // on submit, show possibleAnswers
-submitAnswerbtn.addEventListener('click', function(){
+submitAnswerbtn.addEventListener('click', function () {
     stopTimer();
     showpossibleAnswers();
 });
@@ -60,107 +65,115 @@ function initGame() {
     startTimer();
     questionNumber++;
     buildQuestion();
-   setTimeout(initGame, 1000 * 15);
+    setTimeout(initGame, 1000 * 15);
 };
 
 function startTimer() {
 
     // DONE: Use setInterval to start the count here and set the clock to running.
     if (!timerRunning) {
-      intervalId = setInterval(count, 1000);
-      timerRunning = true;
+        intervalId = setInterval(count, 1000);
+        timerRunning = true;
     }
-  };
-  function stopTimer() {
+};
+function stopTimer() {
 
     // DONE: Use clearInterval to stop the count here and set the clock to not be running.
     clearInterval(intervalId);
     timerRunning = false;
-  };
+};
 
-  function count() {
+function count() {
 
     // DONE: increment time by 1, remember we cant use "this" here.
     time++;
-  
+
     // DONE: Get the current time, pass that into the timeConverter function,
     //       and save the result in a variable.
     var converted = timeConverter(time);
     console.log(converted);
-  
+
     // DONE: Use the variable we just created to show the converted time in the "display" div.
     gameTimer.innerHTML = converted;
-  }
+}
 
-  var converted = timeConverter(time);
-  console.log(converted);
+var converted = timeConverter(time);
+console.log(converted);
 
-  // DONE: Use the variable we just created to show the converted time in the "display" div.
-  gameTimer.innerHTML = converted;
+// DONE: Use the variable we just created to show the converted time in the "display" div.
+gameTimer.innerHTML = converted;
 
 
 function timeConverter(t) {
 
-  var minutes = Math.floor(t / 60);
-  var seconds = t - (minutes * 60);
+    var minutes = Math.floor(t / 60);
+    var seconds = t - (minutes * 60);
 
-  if (seconds < 10) {
-    seconds = "0" + seconds;
-  }
+    if (seconds < 10) {
+        seconds = "0" + seconds;
+    }
 
-  if (minutes === 0) {
-    minutes = "00";
-  }
-  else if (minutes < 10) {
-    minutes = "0" + minutes;
-  }
+    if (minutes === 0) {
+        minutes = "00";
+    }
+    else if (minutes < 10) {
+        minutes = "0" + minutes;
+    }
 
-  return minutes + ":" + seconds;
+    return minutes + ":" + seconds;
 }
 
 function buildQuestion() {
-    // we'll need a place to store the HTML output
-    const output = [];
-    var currentQuestion = gameQuestions[questionNumber];
-    console.log(currentQuestion);
+    if (questionNumber < numberOfQuestions) {
+        console.log(questionNumber);
+        console.log(gameQuestions.lenght + 1);
+        // we'll need a place to store the HTML output
+        const output = [];
+        var currentQuestion = gameQuestions[questionNumber];
+        console.log(currentQuestion);
 
-    // for each question...
-                        console.log('questionNumber ' + questionNumber);
+        // for each question...
+        console.log('questionNumber ' + questionNumber);
 
-            // we'll want to store the list of answer choices
-            const answers = [];
+        // we'll want to store the list of answer choices
+        const answers = [];
 
-            // and for each available answer...
-            for (letter in currentQuestion.answers) {
+        // and for each available answer...
+        for (letter in currentQuestion.answers) {
 
-                // ...add an HTML radio button
-                answers.push(
-                    `<label>
+            // ...add an HTML radio button
+            answers.push(
+                `<label>
             <input type="radio" name="question${questionNumber}" value="${letter}">
             ${letter} :
             ${currentQuestion.answers[letter]}
           </label>`
-                );
-            }
-console.log(answers);
-            output.push(
-               
-             `<div class="question"> ${currentQuestion.question} </div>
-           <div class="answers"> ${answers.join("")} </div>`
             );
+        }
+        console.log(answers);
+        output.push(
 
-            console.log('output ' + output);
+            `<div class="question"> ${currentQuestion.question} </div>
+           <div class="answers"> ${answers.join("")} </div>`
+        );
+
+        console.log('output ' + output);
 
 
-    
+
 
         questionContainer.innerHTML = output.join("");
+    }
+    else {
+        questionContainer.innerHTML = "game over!!!"
+        stopTimer();
+    };
 
 };
 
 
 function showpossibleAnswers() {
-   // stopTimer();
+    // stopTimer();
 
     // gather answer containers from our questions
     const answerContainers = questionContainer.querySelectorAll('.answers');
