@@ -3,12 +3,13 @@ const possibleAnswersContainer = document.getElementById('possibleAnswers');
 const submitAnswerbtn = document.getElementById('submitAnswers');
 const startGamebtn = document.getElementById('startGame');
 const gameTimer = document.getElementById('timeDisplay')
+const correctAnswerContainer = document.getElementById("correctAnswerDispaly");
 var intervalId;
 var timerRunning = false;
 var time = 0;
 var questionNumber = -1;
-
-
+var searchWord = "";
+displayCorrectAnswer("cat")
 
 const gameQuestions = [
     {
@@ -16,9 +17,10 @@ const gameQuestions = [
         answers: {
             a: "ans a",
             b: "ans b",
-            c: "ans c"
+            c: "ans cat"
         },
-        correctAnswer: "c"
+        correctAnswer: "c",
+        GiffSearchWord: "cat"
     },
     {
         question: "test question 2?",
@@ -27,7 +29,9 @@ const gameQuestions = [
             b: "ans b",
             c: "ans c"
         },
-        correctAnswer: "c"
+        correctAnswer: "b",
+        GiffSearchWord: "pig"
+        
     },
     {
         question: "test question 3?",
@@ -35,9 +39,10 @@ const gameQuestions = [
             a: "ans a",
             b: "ans b",
             c: "ans c",
-            d: "ans d"
+            d: "ans dog"
         },
-        correctAnswer: "d"
+        correctAnswer: "d",
+        GiffSearchWord: "dog"
     }
 ];
 
@@ -60,6 +65,7 @@ submitAnswerbtn.addEventListener('click', function () {
 function initGame() {
     questionContainer.innerHTML = "";
     gameTimer.innerHTML = "0.00";
+    correctAnswerContainer = "";  
     time = 0;
     stopTimer();
     startTimer();
@@ -173,7 +179,6 @@ function buildQuestion() {
 
 
 function showpossibleAnswers() {
-    // stopTimer();
 
     // gather answer containers from our questions
     const answerContainers = questionContainer.querySelectorAll('.answers');
@@ -188,11 +193,13 @@ function showpossibleAnswers() {
         const answerContainer = answerContainers[questionNumber];
         const selector = 'input[name=question' + questionNumber + ']:checked';
         const userAnswer = (answerContainer.querySelector(selector) || {}).value;
-
+console.log("userAnswer + " + userAnswer);
         // if answer is correct
         if (userAnswer === currentQuestion.correctAnswer) {
             // add to the number of correct answers
             numCorrect++;
+            searchWord = currentQuestion.GiffSearchWord
+            displayCorrectAnswer(searchWord);
 
             // color the answers green
             answerContainers[questionNumber].style.color = 'lightgreen';
@@ -208,4 +215,16 @@ function showpossibleAnswers() {
     possibleAnswersContainer.innerHTML = numCorrect + ' out of ' + gameQuestions.length;
 };
 
+function displayCorrectAnswer(searchWord){
+      // Example queryURL for Giphy API
+      var queryURL = `https://api.giphy.com/v1/gifs/search?q=${searchWord}&api_key=dc6zaTOxFJmzC&limit=1`; 
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).then(function(response) {
+        console.log(response);
+        console.log(response.data[0].url);
+        correctAnswerContainer.innerHTML(response.data[0].url);
+      });
 
+};
