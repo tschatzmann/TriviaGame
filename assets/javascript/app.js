@@ -3,13 +3,13 @@ const possibleAnswersContainer = document.getElementById('possibleAnswers');
 const submitAnswerbtn = document.getElementById('submitAnswers');
 const startGamebtn = document.getElementById('startGame');
 const gameTimer = document.getElementById('timeDisplay')
-const correctAnswerContainer = document.getElementById("correctAnswerDispaly");
+const correctAnswerContainer = document.getElementById("correctAnswerDisplay");
 var intervalId;
 var timerRunning = false;
 var time = 0;
 var questionNumber = -1;
 var searchWord = "";
-displayCorrectAnswer("cat")
+//displayCorrectAnswer("cat")
 
 const gameQuestions = [
     {
@@ -31,7 +31,7 @@ const gameQuestions = [
         },
         correctAnswer: "b",
         GiffSearchWord: "pig"
-        
+
     },
     {
         question: "test question 3?",
@@ -39,16 +39,15 @@ const gameQuestions = [
             a: "ans a",
             b: "ans b",
             c: "ans c",
-            d: "ans dog"
-        },
-        correctAnswer: "d",
+                 },
+        correctAnswer: "a",
         GiffSearchWord: "dog"
-    }
+    },
 ];
 
 var numberOfQuestions = (Object.keys(gameQuestions));
 console.log(numberOfQuestions);
-numberOfQuestions = numberOfQuestions.length ++;
+numberOfQuestions = numberOfQuestions.length++;
 console.log(numberOfQuestions);
 // start the games
 startGamebtn.addEventListener('click', initGame);
@@ -58,6 +57,7 @@ startGamebtn.addEventListener('click', initGame);
 submitAnswerbtn.addEventListener('click', function () {
     stopTimer();
     showpossibleAnswers();
+    initGame();
 });
 
 
@@ -65,7 +65,7 @@ submitAnswerbtn.addEventListener('click', function () {
 function initGame() {
     questionContainer.innerHTML = "";
     gameTimer.innerHTML = "0.00";
-    correctAnswerContainer = "";  
+    correctAnswerContainer.innerHTML = "";
     time = 0;
     stopTimer();
     startTimer();
@@ -143,7 +143,7 @@ function buildQuestion() {
 
         // we'll want to store the list of answer choices
         const answers = [];
-
+        const gifWords = [];
         // and for each available answer...
         for (letter in currentQuestion.answers) {
 
@@ -162,6 +162,7 @@ function buildQuestion() {
             `<div class="question"> ${currentQuestion.question} </div>
            <div class="answers"> ${answers.join("")} </div>`
         );
+        gifWords.push(currentQuestion.GiffSearchWord)
 
         console.log('output ' + output);
 
@@ -179,21 +180,29 @@ function buildQuestion() {
 
 
 function showpossibleAnswers() {
-
+    
     // gather answer containers from our questions
-    const answerContainers = questionContainer.querySelectorAll('.answers');
+   
 
     // keep track of user's answers
     let numCorrect = 0;
 
     // for each question...
-    gameQuestions.forEach((currentQuestion, questionNumber) => {
+//gameQuestions.forEach((currentQuestion, questionNumber) => {
+    var currentQuestion = gameQuestions[questionNumber];
+        console.log(questionNumber);
+        console.log(currentQuestion);
 
         // find selected answer
-        const answerContainer = answerContainers[questionNumber];
+        const possibleAnswersContainer = questionContainer.querySelectorAll('.answers');
+        const answerContainer = possibleAnswersContainer[0];
+        console.log(answerContainer);
+        console.log(possibleAnswersContainer)
+        console.log(possibleAnswersContainer[0])
         const selector = 'input[name=question' + questionNumber + ']:checked';
+        console.log('selector ' + selector);
         const userAnswer = (answerContainer.querySelector(selector) || {}).value;
-console.log("userAnswer + " + userAnswer);
+        console.log("userAnswer + " + userAnswer);
         // if answer is correct
         if (userAnswer === currentQuestion.correctAnswer) {
             // add to the number of correct answers
@@ -202,29 +211,61 @@ console.log("userAnswer + " + userAnswer);
             displayCorrectAnswer(searchWord);
 
             // color the answers green
-            answerContainers[questionNumber].style.color = 'lightgreen';
+            possibleAnswersContainer[questionNumber].style.color = 'lightgreen';
         }
         // if answer is wrong or blank
         else {
             // color the answers red
-            answerContainers[questionNumber].style.color = 'red';
+            possibleAnswersContainer[questionNumber].style.color = 'red';
         }
-    });
+  //});
 
     // show number of correct answers out of total
     possibleAnswersContainer.innerHTML = numCorrect + ' out of ' + gameQuestions.length;
 };
 
-function displayCorrectAnswer(searchWord){
-      // Example queryURL for Giphy API
-      var queryURL = `https://api.giphy.com/v1/gifs/search?q=${searchWord}&api_key=dc6zaTOxFJmzC&limit=1`; 
-      $.ajax({
+function displayCorrectAnswer(searchWord) {
+    // Example queryURL for Giphy API
+    var queryURL = `https://api.giphy.com/v1/gifs/search?q=${searchWord}&api_key=dc6zaTOxFJmzC&limit=1`;
+    $.ajax({
         url: queryURL,
         method: "GET"
-      }).then(function(response) {
+    }).then(function (response) {
         console.log(response);
         console.log(response.data[0].url);
-        correctAnswerContainer.innerHTML(response.data[0].url);
-      });
+       // correctAnswerContainer.innerHTML(response.data[0].url);
+        var results = response.data;
+
+        // Looping over every result item
+        for (var i = 0; i < results.length; i++) {
+
+            // Only taking action if the photo has an appropriate rating
+            if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+                // Creating a div for the gif
+                var gifDiv = $("<div>");
+
+                // Storing the result item's rating
+                var rating = results[i].rating;
+
+                // Creating a paragraph tag with the result item's rating
+                var p = $("<p>").text("Rating: " + rating);
+
+                // Creating an image tag
+                var personImage = $("<img>");
+
+                // Giving the image tag an src attribute of a proprty pulled off the
+                // result item
+                personImage.attr("src", results[i].images.fixed_height.url);
+
+                // Appending the paragraph and personImage we created to the "gifDiv" div we created
+                gifDiv.append(p);
+                gifDiv.append(personImage);
+
+                // Prepending the gifDiv to the "#gifs-appear-here" div in the HTML
+                $("#gifs-appear-here").prepend(gifDiv);
+            }
+        }
+    });
+    // });
 
 };
