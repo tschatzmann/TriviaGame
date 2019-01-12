@@ -1,8 +1,6 @@
 const questionContainer = document.getElementById('triviaQuestions');
-const possibleAnswersContainer = document.getElementById('possibleAnswers');
 const startGamebtn = document.getElementById('startGame');
 const gameTimer = document.getElementById('timeDisplay')
-const correctAnswerContainer = document.getElementById("correctAnswerDisplay");
 
 var intervalId;
 var timerRunning = false;
@@ -61,7 +59,6 @@ startGamebtn.addEventListener('click', initGame);
 function initGame() {
     questionContainer.innerHTML = "";
     gameTimer.innerHTML = "0.00";
-    correctAnswerContainer.innerHTML = "";
     time = 0;
     stopTimer();
     startTimer(seconds30,gameTimer);
@@ -139,9 +136,10 @@ function buildQuestion() {
         questionContainer.innerHTML = output.join("");
     }
     else {
-        questionContainer.innerHTML = "game over!!!"
+        var gameoverTemplate = `
+        <p> Your score is ${numCorrect} out of ${gameQuestions.length}`
+        questionContainer.innerHTML = gameoverTemplate
         // show number of correct answers out of total
-        possibleAnswersContainer.innerHTML = numCorrect + ' out of ' + gameQuestions.length;
         stopTimer();
     };
 
@@ -180,9 +178,7 @@ stopTimer();
     displayCorrectAnswer(searchWord);
     startTimer();
     setTimeout(initGame,1000 * 5 );
-   // initGame();
-  //  possibleAnswersContainer.innerHTML = numCorrect + ' out of ' + gameQuestions.length;
-};
+ };
 
 function displayCorrectAnswer(searchWord) {
     // Example queryURL for Giphy API
@@ -193,15 +189,10 @@ function displayCorrectAnswer(searchWord) {
     }).then(function (response) {
         console.log(response);
         console.log(response.data[0].url);
-        // correctAnswerContainer.innerHTML(response.data[0].url);
         var results = response.data[0];
-
-        // Looping over every result item
-        // for (var i = 0; i < results.length; i++) {
-
         // Only taking action if the photo has an appropriate rating
         if (results.rating !== "r" && results.rating !== "pg-13") {
-            // Creating a div for the gif
+            // Creating a div template gif
             var ptemplate = `<p>
                 ${questionMessage}</p>
                 <div>
