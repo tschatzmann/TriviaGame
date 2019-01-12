@@ -5,6 +5,7 @@ const startGamebtn = document.getElementById('startGame');
 const gameTimer = document.getElementById('timeDisplay')
 const correctAnswerContainer = document.getElementById("correctAnswerDisplay");
 const gifContainer = document.getElementById("gifs-appear-here");
+
 var intervalId;
 var timerRunning = false;
 var time = 0;
@@ -28,9 +29,9 @@ const gameQuestions = [
     {
         question: "test question 2?",
         answers: {
-            a: "ans a",
-            b: "ans b",
-            c: "ans c"
+            a: "ans2 a",
+            b: "ans2 b",
+            c: "ans2 c"
         },
         correctAnswer: "b",
         GiffSearchWord: "pig"
@@ -39,9 +40,9 @@ const gameQuestions = [
     {
         question: "test question 3?",
         answers: {
-            a: "ans a",
-            b: "ans b",
-            c: "ans c",
+            a: "ans3 a",
+            b: "ans3 b",
+            c: "ans3 c",
         },
         correctAnswer: "a",
         GiffSearchWord: "dog"
@@ -57,6 +58,8 @@ startGamebtn.addEventListener('click', initGame);
 
 
 // on submit, show possibleAnswers
+//$("#startGame").on("click", function (){
+//  console.log('at start');
 submitAnswerbtn.addEventListener('click', function () {
     stopTimer();
     checkAnswers();
@@ -154,20 +157,21 @@ function buildQuestion() {
 
             // ...add an HTML radio button
             answers.push(
-                `<label>
-            <input type="radio" name="question${questionNumber}" value="${letter}">
+                `<button class="ansbuttons"
+             name="question${questionNumber}" answer="${letter}" 
+            >            
             ${letter} :
             ${currentQuestion.answers[letter]}
-          </label>`
+          </button>`
             );
         }
         console.log(answers);
         output.push(
 
             `<div class="question"> ${currentQuestion.question} </div>
-           <div class="answers"> ${answers.join("")} </div>`
+           <div id="answerbuttons"> ${answers.join("")} </div>`
         );
-        gifWords.push(currentQuestion.GiffSearchWord)
+        gifWords.push(currentQuestion.GiffSearchWord);
 
         console.log('output ' + output);
 
@@ -184,7 +188,17 @@ function buildQuestion() {
     };
 
 };
+const answerButton = document.getElementsByClassName("ansbuttons");
+console.log(answerButton);
 
+answerButton.addEventListener('click', function () {
+    //  $("#answerbuttons").on('click', function(){
+    console.log('click answer buttons');
+    console.log(this);
+    var userAnswer = $(this).attr("answer")
+    console.log(userAnswer);
+    checkAnswers(userAnswer)
+});
 
 function checkAnswers() {
 
@@ -194,18 +208,21 @@ function checkAnswers() {
     console.log(currentQuestion);
 
     // find selected answer
-    const possibleAnswersContainer = questionContainer.querySelectorAll('.answers');
-    const answerContainer = possibleAnswersContainer[0];
-    console.log(answerContainer);
-    console.log(possibleAnswersContainer)
-    console.log(possibleAnswersContainer[0])
-    const selector = 'input[name=question' + questionNumber + ']:checked';
-    console.log('selector ' + selector);
-    const userAnswer = (answerContainer.querySelector(selector) || {}).value;
-    console.log("userAnswer + " + userAnswer);
+    //  const possibleAnswersContainer = questionContainer.querySelectorAll('.answers');
+    //   const answerContainer = possibleAnswersContainer[0];
+    //   console.log(answerContainer);
+    //   console.log(possibleAnswersContainer)
+    //   console.log(possibleAnswersContainer[0])
+    //   const selector = 'input[name=question' + questionNumber + ']:checked';
+    //   console.log('selector ' + selector);
+    //const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+    //  console.log("userAnswer + " + userAnswer);
     searchWord = currentQuestion.GiffSearchWord;
+    console.log(this)
+    const ans = document.getElementsByClassName("answers").answer;
+    console.log('button userAnswer ' + ans);
     // if answer is correct
-    if (userAnswer === currentQuestion.correctAnswer) {
+    if (ans === currentQuestion.correctAnswer) {
         // add to the number of correct answers
         numCorrect++;
 
@@ -213,14 +230,14 @@ function checkAnswers() {
         //displayCorrectAnswer(searchWord);
 
         // color the answers green
-        possibleAnswersContainer[0].style.color = 'lightgreen';
+        //  possibleAnswersContainer[0].style.color = 'lightgreen';
     }
     // if answer is wrong or blank
     else {
         // color the answers red
         numWrong++;
         questionMessage = "you loose"
-        possibleAnswersContainer[0].style.color = 'red';
+        //     possibleAnswersContainer[0].style.color = 'red';
     }
 
     // show number of correct answers out of total
