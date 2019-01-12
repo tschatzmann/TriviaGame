@@ -12,6 +12,7 @@ var searchWord = "";
 var questionMessage = "";
 let numCorrect = 0;
 let numWrong = 0;
+let seconds30 = 15;
 
 const gameQuestions = [
     {
@@ -63,66 +64,39 @@ function initGame() {
     correctAnswerContainer.innerHTML = "";
     time = 0;
     stopTimer();
-    startTimer();
+    startTimer(seconds30,gameTimer);
     questionNumber++;
     buildQuestion();
     setTimeout(checkAnswers, 1000 * 15);
 };
 
-function startTimer() {
-
-    // DONE: Use setInterval to start the count here and set the clock to running.
-    if (!timerRunning) {
-        intervalId = setInterval(count, 1000);
-        timerRunning = true;
+function startTimer(duration, display) {
+        if (!timerRunning) {
+            timerRunning = true;
+            var timer = duration, minutes, seconds;
+            intervalId =  setInterval(function () {
+                console.log(intervalId)
+            minutes = parseInt(timer / 60, 10)
+            seconds = parseInt(timer % 60, 10);
+    
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+    
+            display.textContent = minutes + ":" + seconds;
+    
+            if (--timer < 0) {
+                timer = duration;
+            }
+        }, 1000);
     }
 };
 function stopTimer() {
-
-    // DONE: Use clearInterval to stop the count here and set the clock to not be running.
-    clearInterval(intervalId);
+   // DONE: Use clearInterval to stop the count here and set the clock to not be running.
+   console.log(intervalId) 
+   clearInterval(intervalId);
     timerRunning = false;
 };
 
-function count() {
-
-    // DONE: increment time by 1, remember we cant use "this" here.
-    time++;
-
-    // DONE: Get the current time, pass that into the timeConverter function,
-    //       and save the result in a variable.
-    var converted = timeConverter(time);
-    console.log(converted);
-
-    // DONE: Use the variable we just created to show the converted time in the "display" div.
-    gameTimer.innerHTML = converted;
-}
-
-var converted = timeConverter(time);
-console.log(converted);
-
-// DONE: Use the variable we just created to show the converted time in the "display" div.
-gameTimer.innerHTML = converted;
-
-
-function timeConverter(t) {
-
-    var minutes = Math.floor(t / 60);
-    var seconds = t - (minutes * 60);
-
-    if (seconds < 10) {
-        seconds = "0" + seconds;
-    }
-
-    if (minutes === 0) {
-        minutes = "00";
-    }
-    else if (minutes < 10) {
-        minutes = "0" + minutes;
-    }
-
-    return minutes + ":" + seconds;
-}
 
 function buildQuestion() {
     if (questionNumber < numberOfQuestions) {
