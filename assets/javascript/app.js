@@ -3,7 +3,6 @@ const possibleAnswersContainer = document.getElementById('possibleAnswers');
 const startGamebtn = document.getElementById('startGame');
 const gameTimer = document.getElementById('timeDisplay')
 const correctAnswerContainer = document.getElementById("correctAnswerDisplay");
-const gifContainer = document.getElementById("gifs-appear-here");
 
 var intervalId;
 var timerRunning = false;
@@ -52,13 +51,9 @@ var numberOfQuestions = (Object.keys(gameQuestions));
 console.log(numberOfQuestions);
 numberOfQuestions = numberOfQuestions.length++;
 console.log(numberOfQuestions);
+questionContainer.innerHTML = "Select Start to begin the game";
 // start the games
 startGamebtn.addEventListener('click', initGame);
-
-
-// on submit, show possibleAnswers
-//$("#startGame").on("click", function (){
-//  console.log('at start');
 
 
 //
@@ -66,7 +61,6 @@ function initGame() {
     questionContainer.innerHTML = "";
     gameTimer.innerHTML = "0.00";
     correctAnswerContainer.innerHTML = "";
-    gifContainer.innerHTML = "";
     time = 0;
     stopTimer();
     startTimer();
@@ -138,6 +132,7 @@ function buildQuestion() {
         const output = [];
         var currentQuestion = gameQuestions[questionNumber];
         console.log(currentQuestion);
+        questionContainer.innerHTML = output;
 
         // for each question...
         console.log('questionNumber ' + questionNumber);
@@ -187,11 +182,12 @@ $(questionContainer).on('click',".ansbuttons", function() {
 });
 
 function checkAnswers(ans) {
-
+stopTimer();
     // for each question...
     var currentQuestion = gameQuestions[questionNumber];
     console.log(questionNumber);
     console.log(currentQuestion);
+    questionContainer.innerHTML = "  ";
 
     searchWord = currentQuestion.GiffSearchWord;
      console.log('button userAnswer ' + ans);
@@ -199,17 +195,19 @@ function checkAnswers(ans) {
     if (ans === currentQuestion.correctAnswer) {
         // add to the number of correct answers
         numCorrect++;
-        questionMessage = "You win"
+        questionMessage = `You are correct. The answer is ${currentQuestion.correctAnswer}`
     }
     // if answer is wrong or blank
     else {
         numWrong++;
-        questionMessage = "you loose"
+    questionMessage = ` That is incorrect. The correct answer is ${currentQuestion.correctAnswer} `
     }
 
     displayCorrectAnswer(searchWord);
-    initGame();
-    possibleAnswersContainer.innerHTML = numCorrect + ' out of ' + gameQuestions.length;
+    startTimer();
+    setTimeout(initGame,1000 * 5 );
+   // initGame();
+  //  possibleAnswersContainer.innerHTML = numCorrect + ' out of ' + gameQuestions.length;
 };
 
 function displayCorrectAnswer(searchWord) {
@@ -230,23 +228,13 @@ function displayCorrectAnswer(searchWord) {
         // Only taking action if the photo has an appropriate rating
         if (results.rating !== "r" && results.rating !== "pg-13") {
             // Creating a div for the gif
-            var gifDiv = $("<div>");
-            // var answerText = $(<p>${message}</p>)
-            // Creating an image tag
-            var answerImage = $("<img>");
             var ptemplate = `<p>
-                ${questionMessage}</p>`
-            correctAnswerContainer.innerHTML = ptemplate;
+                ${questionMessage}</p>
+                <div>
+                <img src="${ results.images.fixed_height.url }">
+                </div>`
+            questionContainer.innerHTML = ptemplate;
 
-            // Giving the image tag an src attribute of a proprty pulled off the
-            // result item
-            answerImage.attr("src", results.images.fixed_height.url);
-
-            // Appending the paragraph and personImage we created to the "gifDiv" div we created
-            gifDiv.append(answerImage);
-
-            // Prepending the gifDiv to the "#gifs-appear-here" div in the HTML
-            $("#gifs-appear-here").prepend(gifDiv);
         }
     });
 };
