@@ -52,12 +52,17 @@ numberOfQuestions = numberOfQuestions.length++;
 console.log(numberOfQuestions);
 questionContainer.innerHTML = "Select Start to begin the game";
 // start the games
-startGamebtn.addEventListener('click', initGame);
+startGamebtn.addEventListener('click', function(){
+    console.log("start button clicked");
+    initGame();
+});
 
 
 //
 function initGame() {
+    console.log(gameQuestions);
     questionContainer.innerHTML = "";
+    startGamebtn.style.display = "none";
     gameTimer.innerHTML = "0.00";
     time = 0;
     stopTimer();
@@ -67,7 +72,7 @@ function initGame() {
     setTimeout(checkAnswers, 1000 * 15);
 };
 
-function startTimer(duration, display) {
+function startTimer(duration, gameTimer) {
         if (!timerRunning) {
             timerRunning = true;
             var timer = duration, minutes, seconds;
@@ -79,7 +84,7 @@ function startTimer(duration, display) {
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
     
-            display.textContent = minutes + ":" + seconds;
+            gameTimer.textContent = minutes + ":" + seconds;
     
             if (--timer < 0) {
                 timer = duration;
@@ -136,11 +141,7 @@ function buildQuestion() {
         questionContainer.innerHTML = output.join("");
     }
     else {
-        var gameoverTemplate = `
-        <p> Your score is ${numCorrect} out of ${gameQuestions.length}`
-        questionContainer.innerHTML = gameoverTemplate
-        // show number of correct answers out of total
-        stopTimer();
+        endGame();
     };
 
 };
@@ -152,6 +153,19 @@ $(questionContainer).on('click',".ansbuttons", function() {
     console.log(userAnswer);
     checkAnswers(userAnswer)
 });
+
+function endGame() {
+    var gameoverTemplate = `
+        <p> Your score is ${numCorrect} out of ${gameQuestions.length}`;
+    questionContainer.innerHTML = gameoverTemplate;
+    // show number of correct answers out of total
+    stopTimer();
+    startGamebtn.style.display = "initial";
+    startGamebtn.textContent= "Restart";intervalId;
+    questionNumber = -1;
+    numCorrect = 0;
+    numWrong = 0;
+};
 
 function checkAnswers(ans) {
 stopTimer();
