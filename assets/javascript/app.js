@@ -52,11 +52,7 @@ numberOfQuestions = numberOfQuestions.length++;
 console.log(numberOfQuestions);
 questionContainer.innerHTML = "Select Start to begin the game";
 // start the games
-startGamebtn.addEventListener('click', function(){
-    console.log("start button clicked");
-    initGame();
-});
-
+startGamebtn.addEventListener('click', initGame);
 
 //
 function initGame() {
@@ -94,7 +90,6 @@ function startTimer(duration, gameTimer) {
 };
 function stopTimer() {
    // DONE: Use clearInterval to stop the count here and set the clock to not be running.
-   console.log(intervalId) 
    clearInterval(intervalId);
     timerRunning = false;
 };
@@ -165,6 +160,7 @@ function endGame() {
     questionNumber = -1;
     numCorrect = 0;
     numWrong = 0;
+    time = 0;
 };
 
 function checkAnswers(ans) {
