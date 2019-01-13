@@ -63,7 +63,7 @@ function initGame() {
     console.log(gameQuestions);
     questionContainer.innerHTML = "";
     startGamebtn.style.display = "none";
-    gameTimer.innerHTML = "0.00";
+    gameTimer.innerHTML = "Countdown: 00:00";
     time = 0;
     stopTimer();
     startTimer(seconds30,gameTimer);
@@ -84,7 +84,7 @@ function startTimer(duration, gameTimer) {
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
     
-            gameTimer.textContent = minutes + ":" + seconds;
+            gameTimer.textContent = "Countdown: " + minutes + ":" + seconds;
     
             if (--timer < 0) {
                 timer = duration;
@@ -161,7 +161,7 @@ function endGame() {
     // show number of correct answers out of total
     stopTimer();
     startGamebtn.style.display = "initial";
-    startGamebtn.textContent= "Restart";intervalId;
+    startGamebtn.textContent= "Restart";
     questionNumber = -1;
     numCorrect = 0;
     numWrong = 0;
