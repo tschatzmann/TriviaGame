@@ -2,7 +2,7 @@ const questionContainer = document.getElementById('triviaQuestions');
 const startGamebtn = document.getElementById('startGame');
 const gameTimer = document.getElementById('timeDisplay')
 
-var intervalId;
+var intervalId = "";
 var timerRunning = false;
 var time = 0;
 var questionNumber = -1;
@@ -11,38 +11,41 @@ var questionMessage = "";
 let numCorrect = 0;
 let numWrong = 0;
 let seconds30 = 15;
+let minutes = 0;
+let seconds = 0;
+
 
 const gameQuestions = [
     {
-        question: "test question 1?",
+        question: "The slowest animal on Earth?",
         answers: {
-            a: "ans a",
-            b: "ans b",
-            c: "ans cat"
+            a: "Turtle",
+            b: "Snail",
+            c: "three-toed sloth"
         },
         correctAnswer: "c",
-        GiffSearchWord: "cat"
+        GiffSearchWord: "three-toed sloth"
     },
     {
-        question: "test question 2?",
+        question: "A snail can sleep how many years?",
         answers: {
-            a: "ans2 a",
-            b: "ans2 b",
-            c: "ans2 c"
+            a: "5 years",
+            b: "3 years",
+            c: "10 years"
         },
         correctAnswer: "b",
-        GiffSearchWord: "pig"
+        GiffSearchWord: "snail"
 
     },
     {
-        question: "test question 3?",
+        question: "A group of young pigs is called?",
         answers: {
-            a: "ans3 a",
-            b: "ans3 b",
-            c: "ans3 c",
+            a: "Drift",
+            b: "Heard",
+            c: "School",
         },
         correctAnswer: "a",
-        GiffSearchWord: "dog"
+        GiffSearchWord: "pig"
     },
 ];
 
@@ -59,13 +62,15 @@ function initGame() {
     console.log(gameQuestions);
     questionContainer.innerHTML = "";
     startGamebtn.style.display = "none";
-    gameTimer.innerHTML = "Countdown: 00:00";
+    gameTimer.innerText = "Countdown: 00:00";
     time = 0;
+    timer = 0;
     stopTimer();
+    seconds30 = 15;
     startTimer(seconds30,gameTimer);
     questionNumber++;
     buildQuestion();
-    setTimeout(checkAnswers, 1000 * 15);
+    //setTimeout(checkAnswers, 1000 * 15);
 };
 
 function startTimer(duration, gameTimer) {
@@ -80,12 +85,14 @@ function startTimer(duration, gameTimer) {
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
     
-            gameTimer.textContent = "Countdown: " + minutes + ":" + seconds;
+            gameTimer.innerText = "Countdown: " + minutes + ":" + seconds;
     
             if (--timer < 0) {
                 timer = duration;
             }
         }, 1000);
+    } else{
+        stopTimer();
     }
 };
 function stopTimer() {
@@ -186,7 +193,7 @@ stopTimer();
     }
 
     displayCorrectAnswer(searchWord);
-    startTimer();
+    // startTimer(seconds30,gameTimer);
     setTimeout(initGame,1000 * 5 );
  };
 
